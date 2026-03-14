@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team RoboX — RoboWaiter Challenge 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050a0f;
+    --surface: #0c1520;
+    --accent: #00d4ff;
+    --accent2: #ff6b35;
+    --gold: #ffd700;
+    --text: #c8e6f5;
+    --dim: #4a7a9b;
+    --border: rgba(0,212,255,0.2);
+    --glow: 0 0 20px rgba(0,212,255,0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    overflow-x: hidden;
+  }
+
+  /* GRID BG */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* SCANLINES */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 40px;
+    background: rgba(5,10,15,0.9);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+  }
+
+  .nav-logo {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: var(--accent);
+    letter-spacing: 4px;
+    text-shadow: var(--glow);
+  }
+
+  .nav-logo span { color: var(--accent2); }
+
+  nav ul {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  nav ul a {
+    color: var(--dim);
+    text-decoration: none;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  nav ul a:hover { color: var(--accent); }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 120px 40px 80px;
+    z-index: 1;
+  }
+
+  .hero-tag {
+    font-size: 0.7rem;
+    letter-spacing: 6px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    animation: fadeDown 0.8s ease both;
+  }
+
+  .hero h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(3rem, 8vw, 7rem);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -2px;
+    margin-bottom: 16px;
+    animation: fadeDown 0.8s 0.1s ease both;
+  }
+
+  .hero h1 .line1 { color: #fff; }
+  .hero h1 .line2 {
+    color: transparent;
+    -webkit-text-stroke: 2px var(--accent);
+    display: block;
+  }
+
+  .hero-sub {
+    font-size: 0.85rem;
+    color: var(--dim);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 48px;
+    animation: fadeDown 0.8s 0.2s ease both;
+  }
+
+  .hero-badges {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeDown 0.8s 0.3s ease both;
+  }
+
+  .badge {
+    border: 1px solid var(--border);
+    padding: 8px 20px;
+    font-size: 0.72rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(0,212,255,0.05);
+  }
+
+  .badge.hot { color: var(--accent2); border-color: rgba(255,107,53,0.3); background: rgba(255,107,53,0.05); }
+
+  /* ROBOT VISUAL */
+  .robot-visual {
+    position: relative;
+    margin: 48px auto;
+    width: 120px;
+    height: 280px;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  .robot-body {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 180px;
+    background: linear-gradient(180deg, #1a3a5c, #0c1520);
+    border: 1px solid var(--accent);
+    box-shadow: 0 0 30px rgba(0,212,255,0.2), inset 0 0 20px rgba(0,212,255,0.05);
+  }
+
+  .robot-head {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 40px;
+    background: linear-gradient(180deg, #1a3a5c, #0c2040);
+    border: 1px solid var(--accent);
+    box-shadow: var(--glow);
+  }
+
+  .robot-eye {
+    position: absolute;
+    top: 12px;
+    width: 10px;
+    height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--accent);
+    animation: blink 3s infinite;
+  }
+
+  .robot-eye.left { left: 10px; }
+  .robot-eye.right { right: 10px; }
+
+  @keyframes blink {
+    0%, 95%, 100% { opacity: 1; }
+    97% { opacity: 0; }
+  }
+
+  .robot-tray {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90px;
+    height: 8px;
+    background: rgba(0,212,255,0.2);
+    border: 1px solid var(--accent);
+    box-shadow: var(--glow);
+  }
+
+  .robot-tray::after {
+    content: '— ПОДНОС —';
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.45rem;
+    letter-spacing: 2px;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .robot-wheel {
+    position: absolute;
+    bottom: -6px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #1a3a5c;
+    border: 2px solid var(--accent);
+    animation: spin 1s linear infinite;
+  }
+
+  .robot-wheel:nth-child(1) { left: -2px; }
+  .robot-wheel:nth-child(2) { left: 50%; transform: translateX(-50%); }
+  .robot-wheel:nth-child(3) { right: -2px; }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .robot-wheel:nth-child(2) {
+    animation: spin2 1s linear infinite;
+  }
+
+  @keyframes spin2 {
+    from { transform: translateX(-50%) rotate(0deg); }
+    to { transform: translateX(-50%) rotate(360deg); }
+  }
+
+  .robot-led {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent2);
+    box-shadow: 0 0 12px var(--accent2);
+    animation: pulse 1s ease-in-out infinite;
+  }
+
+  .robot-led:nth-of-type(1) { top: 80px; }
+  .robot-led:nth-of-type(2) { top: 110px; }
+  .robot-led:nth-of-type(3) { top: 140px; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* SECTIONS */
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 80px 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 0.65rem;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 48px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-title span { color: var(--accent); }
+
+  /* SPECS GRID */
+  .specs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+
+  .spec-item {
+    background: var(--surface);
+    padding: 28px 24px;
+    transition: background 0.2s;
+  }
+
+  .spec-item:hover { background: rgba(0,212,255,0.05); }
+
+  .spec-label {
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 10px;
+  }
+
+  .spec-value {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .spec-unit {
+    font-size: 0.75rem;
+    color: var(--dim);
+    margin-left: 4px;
+  }
+
+  /* COMPONENTS */
+  .components-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    border: 1px solid var(--border);
+  }
+
+  .component-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+
+  .component-row:last-child { border-bottom: none; }
+  .component-row:hover { background: rgba(0,212,255,0.04); }
+
+  .component-type {
+    padding: 20px 24px;
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    border-right: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+  }
+
+  .component-detail {
+    padding: 20px 24px;
+    font-size: 0.85rem;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+  }
+
+  /* ALGO SECTION */
+  .algo-block {
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .algo-header {
+    background: rgba(0,212,255,0.08);
+    padding: 16px 24px;
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .algo-header::before {
+    content: '//';
+    color: var(--dim);
+  }
+
+  .algo-body {
+    padding: 20px 24px;
+    font-size: 0.82rem;
+    line-height: 1.8;
+    color: var(--text);
+  }
+
+  .algo-body ul {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  .algo-body ul li {
+    padding: 4px 0;
+    padding-left: 20px;
+    position: relative;
+  }
+
+  .algo-body ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+
+  /* TEAM */
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .team-card {
+    background: var(--surface);
+    padding: 32px 28px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.2s;
+  }
+
+  .team-card:hover { background: rgba(0,212,255,0.04); }
+
+  .team-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .team-card:hover::before { opacity: 1; }
+
+  .team-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+
+  .team-role {
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 16px;
+  }
+
+  .team-desc {
+    font-size: 0.78rem;
+    line-height: 1.7;
+    color: var(--dim);
+  }
+
+  /* SCORING */
+  .score-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid var(--border);
+  }
+
+  .score-table th {
+    background: rgba(0,212,255,0.08);
+    padding: 16px 24px;
+    text-align: left;
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .score-table td {
+    padding: 18px 24px;
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  .score-table tr:last-child td { border-bottom: none; }
+  .score-table tr:hover td { background: rgba(0,212,255,0.04); }
+
+  .score-pts {
+    font-family: 'Orbitron', sans-serif;
+    color: var(--gold);
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  .score-bar-bg {
+    height: 4px;
+    background: rgba(0,212,255,0.1);
+    margin-top: 6px;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .score-bar {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    animation: growBar 1s ease both;
+  }
+
+  @keyframes growBar {
+    from { width: 0; }
+  }
+
+  /* RULES */
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+  }
+
+  .rule-card {
+    border: 1px solid var(--border);
+    padding: 24px;
+    background: var(--surface);
+  }
+
+  .rule-num {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: rgba(0,212,255,0.15);
+    margin-bottom: 8px;
+  }
+
+  .rule-title {
+    font-size: 0.72rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .rule-text {
+    font-size: 0.8rem;
+    line-height: 1.7;
+    color: var(--dim);
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 60px 40px;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+
+  footer .f-logo {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--accent);
+    letter-spacing: 6px;
+    text-shadow: var(--glow);
+    margin-bottom: 12px;
+  }
+
+  footer .f-sub {
+    font-size: 0.7rem;
+    letter-spacing: 4px;
+    color: var(--dim);
+    text-transform: uppercase;
+  }
+
+  .date-badge {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 24px;
+    border: 1px solid var(--accent2);
+    color: var(--accent2);
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  /* DIVIDER */
+  .divider {
+    position: relative;
+    z-index: 1;
+    height: 1px;
+    background: var(--border);
+    margin: 0 40px;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* TASK FLOW */
+  .task-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    border: 1px solid var(--border);
+  }
+
+  .task-step {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+
+  .task-step:last-child { border-bottom: none; }
+  .task-step:hover { background: rgba(0,212,255,0.04); }
+
+  .task-step-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: rgba(0,212,255,0.3);
+    border-right: 1px solid var(--border);
+  }
+
+  .task-step-text {
+    padding: 20px 24px;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  /* PROHIBITED */
+  .prohibited-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .prohibited-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    border: 1px solid rgba(255,107,53,0.2);
+    background: rgba(255,107,53,0.03);
+  }
+
+  .prohibited-item::before {
+    content: '✕';
+    color: var(--accent2);
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .prohibited-item span {
+    font-size: 0.82rem;
+    color: var(--text);
+  }
+
+  /* HIGHLIGHT BOX */
+  .highlight-box {
+    border: 1px solid var(--accent);
+    padding: 24px;
+    background: rgba(0,212,255,0.04);
+    margin-bottom: 24px;
+    position: relative;
+  }
+
+  .highlight-box::before {
+    content: attr(data-label);
+    position: absolute;
+    top: -10px;
+    left: 16px;
+    background: var(--bg);
+    padding: 0 8px;
+    font-size: 0.6rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  @media (max-width: 600px) {
+    nav ul { display: none; }
+    .component-row { grid-template-columns: 1fr; }
+    .component-type { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">TEAM <span>ROBO</span>X</div>
+  <ul>
+    <li><a href="#robot">Робот</a></li>
+    <li><a href="#algo">Алгоритм</a></li>
+    <li><a href="#team">Команда</a></li>
+    <li><a href="#rules">Правила</a></li>
+    <li><a href="#scoring">Оценка</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">RoboWaiter Challenge 2026 — Школьная столовая</div>
+  <h1>
+    <span class="line1">TEAM</span>
+    <span class="line2">ROBОX</span>
+  </h1>
+  <p class="hero-sub">Автономный робот-официант · Arduino · Line Following · 14.03.2026</p>
+  <div class="hero-badges">
+    <span class="badge">9-й класс</span>
+    <span class="badge">6 участников</span>
+    <span class="badge hot">14.03.2026</span>
+    <span class="badge">3 заезда · 2 попытки</span>
+  </div>
+
+  <div class="robot-visual">
+    <div class="robot-tray"></div>
+    <div class="robot-head">
+      <div class="robot-eye left"></div>
+      <div class="robot-eye right"></div>
+    </div>
+    <div class="robot-body">
+      <div class="robot-led"></div>
+      <div class="robot-led"></div>
+      <div class="robot-led"></div>
+      <div class="robot-wheel"></div>
+      <div class="robot-wheel"></div>
+      <div class="robot-wheel"></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ROBOT SPECS -->
+<section id="robot">
+  <div class="section-label">// Технические данные</div>
+  <h2 class="section-title">Конструкция <span>робота</span></h2>
+
+  <div class="specs-grid">
+    <div class="spec-item">
+      <div class="spec-label">Длина × Ширина × Высота</div>
+      <div class="spec-value">40<span class="spec-unit">см</span> × 40<span class="spec-unit">см</span> × 120<span class="spec-unit">см</span></div>
+    </div>
+    <div class="spec-item">
+      <div class="spec-label">Площадь подноса</div>
+      <div class="spec-value">900<span class="spec-unit">см²</span></div>
+    </div>
+    <div class="spec-item">
+      <div class="spec-label">Макс. нагрузка</div>
+      <div class="spec-value">2<span class="spec-unit">кг</span></div>
+    </div>
+    <div class="spec-item">
+      <div class="spec-label">Колесная система</div>
+      <div class="spec-value">6<span class="spec-unit">колёс</span></div>
+    </div>
+    <div class="spec-item">
+      <div class="spec-label">Напряжение питания</div>
+      <div class="spec-value">7.4–12<span class="spec-unit">В</span></div>
+    </div>
+    <div class="spec-item">
+      <div class="spec-label">Материал корпуса</div>
+      <div class="spec-value" style="font-size:1rem">Фанера / МДФ</div>
+    </div>
+  </div>
+
+  <div class="section-label">// Электронные компоненты</div>
+  <div class="components-list" style="margin-bottom:48px">
+    <div class="component-row">
+      <div class="component-type">Контроллер</div>
+      <div class="component-detail">Arduino Uno — основной микроконтроллер</div>
+    </div>
+    <div class="component-row">
+      <div class="component-type">Датчики линии</div>
+      <div class="component-detail">Инфракрасные TCRT5000 — следование по маршруту</div>
+    </div>
+    <div class="component-row">
+      <div class="component-type">Датчик препятствий</div>
+      <div class="component-detail">Инфракрасный KY-032 — обнаружение объектов</div>
+    </div>
+    <div class="component-row">
+      <div class="component-type">Драйверы моторов</div>
+      <div class="component-detail">2× L298N — движение колёс + механизм подноса</div>
+    </div>
+    <div class="component-row">
+      <div class="component-type">Батареи</div>
+      <div class="component-detail">Литий-ионные 18650 — высокая ёмкость, компактный размер</div>
+    </div>
+    <div class="component-row">
+      <div class="component-type">Привод</div>
+      <div class="component-detail">4 ведущих DC-мотора + 2 поддерживающих колеса</div>
+    </div>
+    <div class="component-row">
+      <div class="component-type">Поднос</div>
+      <div class="component-detail">DC-мотор + механизм подъёма (шестерня/винт), бортики 3–4 см, антискользящее покрытие</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ALGO -->
+<section id="algo">
+  <div class="section-label">// Программирование</div>
+  <h2 class="section-title">Алгоритмы <span>управления</span></h2>
+
+  <div class="algo-block">
+    <div class="algo-header">А. Следование по линии</div>
+    <div class="algo-body">
+      <ul>
+        <li><strong style="color:#fff">Движение прямо</strong> — центральный датчик на линии → одинаковая скорость всех ведущих колёс</li>
+        <li><strong style="color:#fff">Коррекция</strong> — линия смещается → уменьшение скорости одной стороны для плавного возврата</li>
+        <li><strong style="color:#fff">Поиск линии</strong> — датчики потеряли маршрут → медленное вращение до обнаружения</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="algo-block">
+    <div class="algo-header">Б. Алгоритм безопасности</div>
+    <div class="algo-body">
+      <ul>
+        <li>Постоянная проверка сигнала датчика KY-032 в основном цикле программы</li>
+        <li>При обнаружении объекта → немедленная остановка моторов</li>
+        <li>Ожидание освобождения маршрута → возобновление движения</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="algo-block">
+    <div class="algo-header">В. Управление подносом</div>
+    <div class="algo-body">
+      <ul>
+        <li>Отдельная функция управления вторым L298N (привод подноса)</li>
+        <li>Команда «поднять» → мотор вращает передачу → платформа поднимается</li>
+        <li>Команда «опустить» → мотор в обратную сторону → платформа опускается</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="algo-block">
+    <div class="algo-header">Г. Язык программирования</div>
+    <div class="algo-body">C++ · Arduino IDE</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TEAM -->
+<section id="team">
+  <div class="section-label">// Состав команды</div>
+  <h2 class="section-title">6 инженеров — <span>одна цель</span></h2>
+
+  <div class="team-grid">
+    <div class="team-card">
+      <div class="team-name">Ернияз</div>
+      <div class="team-role">Руководитель проекта · Программирование</div>
+      <div class="team-desc">Общее управление проектом, планирование этапов, написание кода для Arduino, реализация алгоритма следования по линии, тестирование.</div>
+    </div>
+    <div class="team-card">
+      <div class="team-name">Таир</div>
+      <div class="team-role">Электроника</div>
+      <div class="team-desc">Подключение Arduino, драйверов моторов, датчиков линии и препятствий, проверка корректной работы электрической системы.</div>
+    </div>
+    <div class="team-card">
+      <div class="team-name">Санжар</div>
+      <div class="team-role">Механика · Конструкция корпуса</div>
+      <div class="team-desc">Разработка конструкции, проектирование каркаса, сборка корпуса из фанеры, установка основных механических элементов.</div>
+    </div>
+    <div class="team-card">
+      <div class="team-name">Данияр</div>
+      <div class="team-role">Система движения</div>
+      <div class="team-desc">Установка и настройка 6-колесной системы, монтаж DC-моторов, проверка работы системы движения.</div>
+    </div>
+    <div class="team-card">
+      <div class="team-name">Акмади</div>
+      <div class="team-role">Механизм подноса</div>
+      <div class="team-desc">Разработка и сборка механизма подъёма подноса, установка дополнительного мотора, тестирование подъёмной системы.</div>
+    </div>
+    <div class="team-card">
+      <div class="team-name">Жан</div>
+      <div class="team-role">Документация · Презентация</div>
+      <div class="team-desc">Подготовка документации проекта, оформление инженерного журнала, подготовка презентации для защиты на соревновании.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- COMPETITION RULES -->
+<section id="rules">
+  <div class="section-label">// RoboWaiter Challenge — Официальные правила</div>
+  <h2 class="section-title">Условия <span>соревнования</span></h2>
+
+  <div class="highlight-box" data-label="Цель соревнования">
+    Создание и демонстрация автономного робота-официанта, способного без вмешательства человека безопасно и точно доставлять заказы в условиях, приближённых к реальному ресторану (школьная столовая).
+  </div>
+
+  <div class="rules-grid" style="margin-bottom:48px">
+    <div class="rule-card">
+      <div class="rule-num">01</div>
+      <div class="rule-title">Участники</div>
+      <div class="rule-text">Команды из 4–6 учащихся 9-х классов. Опциональный наставник из 10–11 классов.</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num">02</div>
+      <div class="rule-title">Размеры робота</div>
+      <div class="rule-text">Макс. 40×40×150 см. Минимальная высота подноса — 40 см. Площадь подноса — не менее 400 см². Нагрузка — до 2 кг.</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num">03</div>
+      <div class="rule-title">Формат</div>
+      <div class="rule-text">3 заезда для каждой команды. В каждом заезде — 2 попытки. Оффлайн, школьная столовая.</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num">04</div>
+      <div class="rule-title">Карантинная зона</div>
+      <div class="rule-text">После 30 минут настройки роботы сдаются в карантин. Прикасаться к роботу и загружать программы запрещено.</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num">05</div>
+      <div class="rule-title">Маршрутная линия</div>
+      <div class="rule-text">Ширина линии — 19 мм. Алаң: старт → приём заказа → доставка (4 зоны) → возврат.</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num">06</div>
+      <div class="rule-title">Кнопки управления</div>
+      <div class="rule-text">Робот должен иметь кнопки с номерами зон доставки для приёма заказа и возврата.</div>
+    </div>
+  </div>
+
+  <div class="section-label">// Задание робота — пошагово</div>
+  <div class="task-flow" style="margin-bottom:48px">
+    <div class="task-step">
+      <div class="task-step-num">1</div>
+      <div class="task-step-text">Старт из стартовой зоны — движение по линии к зоне «приёма заказа»</div>
+    </div>
+    <div class="task-step">
+      <div class="task-step-num">2</div>
+      <div class="task-step-text">Остановка в зоне приёма — ожидание нажатия кнопки с номером зоны доставки</div>
+    </div>
+    <div class="task-step">
+      <div class="task-step-num">3</div>
+      <div class="task-step-text">Движение к нужной зоне доставки — безопасная транспортировка заказа (до 2 кг)</div>
+    </div>
+    <div class="task-step">
+      <div class="task-step-num">4</div>
+      <div class="task-step-text">Остановка в зоне доставки — уведомление посетителей (звук / мигание LED)</div>
+    </div>
+    <div class="task-step">
+      <div class="task-step-num">5</div>
+      <div class="task-step-text">Посетитель нажимает номер своего столика → робот возвращается в стартовую зону</div>
+    </div>
+    <div class="task-step">
+      <div class="task-step-num">!</div>
+      <div class="task-step-text">При появлении препятствия на маршруте — немедленная остановка и ожидание освобождения пути</div>
+    </div>
+  </div>
+
+  <div class="section-label">// Запрещённые действия</div>
+  <div class="prohibited-list">
+    <div class="prohibited-item"><span>Ручное толкание или корректировка робота во время заезда</span></div>
+    <div class="prohibited-item"><span>Изменение конструкции робота во время соревнования</span></div>
+    <div class="prohibited-item"><span>Дистанционное управление роботом во время заезда</span></div>
+    <div class="prohibited-item"><span>Создание помех другим командам</span></div>
+    <div class="prohibited-item"><span>Нарушение правил техники безопасности</span></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SCORING -->
+<section id="scoring">
+  <div class="section-label">// Критерии оценки</div>
+  <h2 class="section-title">100-балльная <span>система</span></h2>
+
+  <table class="score-table">
+    <thead>
+      <tr>
+        <th>Критерий</th>
+        <th>Баллы</th>
+        <th>Прогресс</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Точность прохождения маршрута</td>
+        <td><span class="score-pts">30</span></td>
+        <td><div class="score-bar-bg"><div class="score-bar" style="width:30%"></div></div></td>
+      </tr>
+      <tr>
+        <td>Безопасная транспортировка объекта</td>
+        <td><span class="score-pts">20</span></td>
+        <td><div class="score-bar-bg"><div class="score-bar" style="width:20%"></div></div></td>
+      </tr>
+      <tr>
+        <td>Временной показатель</td>
+        <td><span class="score-pts">20</span></td>
+        <td><div class="score-bar-bg"><div class="score-bar" style="width:20%"></div></div></td>
+      </tr>
+      <tr>
+        <td>Стабильность и безошибочная работа</td>
+        <td><span class="score-pts">20</span></td>
+        <td><div class="score-bar-bg"><div class="score-bar" style="width:20%"></div></div></td>
+      </tr>
+      <tr>
+        <td>Качество инженерного решения</td>
+        <td><span class="score-pts">10</span></td>
+        <td><div class="score-bar-bg"><div class="score-bar" style="width:10%"></div></div></td>
+      </tr>
+      <tr>
+        <td>Ведение обязательной документации</td>
+        <td><span class="score-pts">10</span></td>
+        <td><div class="score-bar-bg"><div class="score-bar" style="width:10%"></div></div></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<footer>
+  <div class="f-logo">TEAM ROBОX</div>
+  <div class="f-sub">RoboWaiter Challenge · Автономный робот-официант</div>
+  <div class="date-badge">Дата соревнований: 14.03.2026</div>
+</footer>
+
+</body>
+</html>
